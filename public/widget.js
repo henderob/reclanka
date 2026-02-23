@@ -171,7 +171,12 @@
       if (success) {
         this.verified = true;
         if (this.onVerify) this.onVerify();
-        setTimeout(() => { this.closeModal(); this.render(); }, 2000);
+        setTimeout(() => {
+          this.closeModal();
+          this.render();
+          // Allow re-verification after 3 seconds
+          setTimeout(() => { this.verified = false; this.render(); }, 3000);
+        }, 2000);
       } else {
         const retry = modal.querySelector('.reclanka-submit');
         if (retry) retry.addEventListener('click', () => { this.closeModal(); this.open(); });
