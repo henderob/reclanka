@@ -9,9 +9,13 @@
   const API = (function () {
     const s = document.currentScript;
     if (s && s.src) {
-      try { return new URL(s.src).origin; } catch (_) {}
+      try {
+        const url = new URL(s.src);
+        const path = url.pathname.replace(/\/[^/]*$/, '');
+        return url.origin + path;
+      } catch (_) {}
     }
-    return '';
+    return '.';
   })();
 
   // Inject CSS
