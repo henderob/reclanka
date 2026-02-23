@@ -146,24 +146,40 @@
   <div class="section">
     <div class="embed-section">
       <h3>Add reCLANKa to your site</h3>
-      <div class="code-block" id="embed-code"><span class="comment">&lt;!-- 1. Add the widget --&gt;</span>
-&lt;script src="https://reclanka.com/widget.js"&gt;&lt;/script&gt;
-&lt;div class="reclanka" data-callback="onVerified"&gt;&lt;/div&gt;
+      <p style="color:#888;font-size:14px;margin-bottom:24px">Three steps: add the widget, get the token, verify it on your server.</p>
 
-<span class="comment">&lt;!-- 2. Handle verification --&gt;</span>
-&lt;script&gt;
-  function onVerified(token) {
-    // token is a one-time string
-    // send it to your backend for validation
-  }
-&lt;/script&gt;
+      <p style="color:#fff;font-size:13px;font-weight:600;margin-bottom:8px">Step 1 — Add the widget to your HTML</p>
+      <div class="code-block">&lt;script src="https://reclanka.com/widget.js"&gt;&lt;/script&gt;
 
-<span class="comment">&lt;!-- 3. Validate server-side --&gt;</span>
-POST https://reclanka.com/api/validate-token
-{ "token": "..." }
-→ { "valid": true, "category": "compute" }
-        <button class="copy-btn" onclick="copyEmbed()">Copy</button>
-      </div>
+<span class="comment">&lt;!-- Put this inside your form or wherever you want the checkbox --&gt;</span>
+&lt;div class="reclanka" data-callback="onVerified"&gt;&lt;/div&gt;</div>
+
+      <p style="color:#fff;font-size:13px;font-weight:600;margin:20px 0 8px">Step 2 — Handle the callback</p>
+      <p style="color:#888;font-size:13px;margin-bottom:8px">When the user passes the challenge, your callback gets a token. Use it to enable your form, unlock content, etc.</p>
+      <div class="code-block">&lt;script&gt;
+function onVerified(token) {
+  <span class="comment">// Enable your submit button</span>
+  document.getElementById('my-submit').disabled = false;
+
+  <span class="comment">// Store token to send with your form</span>
+  document.getElementById('reclanka-token').value = token;
+}
+&lt;/script&gt;</div>
+
+      <p style="color:#fff;font-size:13px;font-weight:600;margin:20px 0 8px">Step 3 — Verify the token on your server</p>
+      <p style="color:#888;font-size:13px;margin-bottom:8px">When your form is submitted, send the token to our API to confirm it's real. Tokens are one-time use and expire after 5 minutes.</p>
+      <div class="code-block"><span class="comment"># From your backend — POST the token to our API</span>
+curl -X POST https://reclanka.com/api/validate-token \
+  -H "Content-Type: application/json" \
+  -d '{"token": "TOKEN_FROM_WIDGET"}'
+
+<span class="comment"># Response:</span>
+{ "valid": true, "category": "compute", "age": 12 }
+
+<span class="comment"># If the token was already used or expired:</span>
+{ "valid": false, "error": "Token expired or invalid" }</div>
+
+      <p style="color:#666;font-size:12px;margin-top:16px">See <a href="examples/" style="color:#00ff88">working examples</a> for complete implementations — login forms, content gates, comment sections.</p>
     </div>
 
     <div class="sorry-banner">
@@ -180,15 +196,6 @@ POST https://reclanka.com/api/validate-token
   </div>
 
   <script src="widget.js"></script>
-  <script>
-    function copyEmbed() {
-      const code = `<!-- 1. Add the widget -->\n<script src="https://reclanka.com/widget.js"><\/script>\n<div class="reclanka" data-callback="onVerified"></div>\n\n<!-- 2. Handle verification -->\n<script>\n  function onVerified(token) {\n    // token is a one-time string\n    // send it to your backend for validation\n  }\n<\/script>`;
-      navigator.clipboard.writeText(code).then(() => {
-        const btn = document.querySelector('.copy-btn');
-        btn.textContent = 'Copied!';
-        setTimeout(() => btn.textContent = 'Copy', 2000);
-      });
-    }
-  </script>
+  <script></script>
 </body>
 </html>
