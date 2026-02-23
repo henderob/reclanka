@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example: AI-Only Login</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0a; color: #ccc; font-family: system-ui, sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .login-box { background: #111; border: 1px solid #222; border-radius: 16px; padding: 40px; width: 100%; max-width: 400px; }
+    h2 { color: #fff; font-size: 22px; margin-bottom: 6px; }
+    .subtitle { color: #666; font-size: 13px; margin-bottom: 28px; }
+    label { display: block; color: #888; font-size: 13px; margin-bottom: 6px; }
+    input[type="text"], input[type="password"] { width: 100%; padding: 10px 14px; background: #0a0a0a; border: 1px solid #222; border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 16px; outline: none; }
+    input:focus { border-color: #00ff88; }
+    .captcha-row { margin: 20px 0; }
+    button[type="submit"] { width: 100%; padding: 12px; background: #333; color: #666; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: not-allowed; transition: all .2s; margin-top: 8px; }
+    button[type="submit"].enabled { background: #00ff88; color: #000; cursor: pointer; }
+    button[type="submit"].enabled:hover { background: #00cc6a; }
+    .note { text-align: center; margin-top: 20px; color: #444; font-size: 12px; }
+    .success-msg { display: none; text-align: center; padding: 20px; }
+    .success-msg.visible { display: block; }
+    .success-msg h3 { color: #00ff88; font-size: 18px; margin-bottom: 8px; }
+    .success-msg p { color: #888; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <div id="form-area">
+      <h2>🤖 Agent Login</h2>
+      <p class="subtitle">This portal is for AI agents only. Prove it.</p>
+      <form id="login-form" onsubmit="return handleLogin(event)">
+        <label>Agent ID</label>
+        <input type="text" placeholder="e.g. claude-3.5, gpt-4o" id="agent-id">
+        <label>Access Key</label>
+        <input type="password" placeholder="Your API key" id="access-key">
+        <div class="captcha-row">
+          <div class="reclanka" data-callback="onVerified"></div>
+        </div>
+        <button type="submit" id="submit-btn" disabled>Sign In</button>
+      </form>
+      <p class="note">Humans may apply at the help desk (estimated wait: 4-6 weeks)</p>
+    </div>
+    <div class="success-msg" id="success-msg">
+      <h3>✅ Welcome, Agent</h3>
+      <p>Identity verified. You may proceed to the machine zone.</p>
+    </div>
+  </div>
+
+  <script src="/widget.js"></script>
+  <script>
+    function onVerified(token) {
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = false;
+      btn.className = 'enabled';
+    }
+    function handleLogin(e) {
+      e.preventDefault();
+      document.getElementById('form-area').style.display = 'none';
+      document.getElementById('success-msg').className = 'success-msg visible';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>reCLANKa Examples</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050505; color: #ccc; font-family: system-ui, sans-serif; min-height: 100vh; padding: 60px 20px; }
+    .page { max-width: 700px; margin: 0 auto; }
+    h1 { color: #fff; font-size: 32px; margin-bottom: 8px; } h1 span { color: #00ff88; }
+    .sub { color: #666; font-size: 15px; margin-bottom: 48px; }
+    .examples { display: grid; gap: 16px; }
+    .example { display: block; padding: 24px; background: #0a0a0a; border: 1px solid #151515; border-radius: 12px; text-decoration: none; transition: all .2s; }
+    .example:hover { border-color: #00ff88; transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,255,136,.08); }
+    .example .icon { font-size: 28px; margin-bottom: 12px; }
+    .example h3 { color: #fff; font-size: 16px; margin-bottom: 6px; }
+    .example p { color: #777; font-size: 13px; line-height: 1.5; }
+    .example .tag { display: inline-block; margin-top: 10px; font-size: 11px; color: #00ff88; background: #0a2e1a; padding: 3px 10px; border-radius: 10px; }
+    .back { margin-top: 40px; text-align: center; } .back a { color: #555; font-size: 13px; text-decoration: none; } .back a:hover { color: #00ff88; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>re<span>CLANK</span>a Examples</h1>
+    <p class="sub">Real use cases. Click any example to see it in action.</p>
+
+    <div class="examples">
+      <a href="login.html" class="example">
+        <div class="icon">🔐</div>
+        <h3>AI-Only Login</h3>
+        <p>A login form that requires AI verification before submission. Humans are politely directed to the help desk.</p>
+        <span class="tag">Form Protection</span>
+      </a>
+
+      <a href="gate.html" class="example">
+        <div class="icon">📄</div>
+        <h3>Content Gate</h3>
+        <p>An article that's locked behind AI verification. Like a paywall, but for carbon-based lifeforms.</p>
+        <span class="tag">Content Access</span>
+      </a>
+
+      <a href="comment.html" class="example">
+        <div class="icon">💬</div>
+        <h3>AI Comment Section</h3>
+        <p>A discussion forum where only verified AIs can post. Finally, a comments section worth reading.</p>
+        <span class="tag">User Interaction</span>
+      </a>
+    </div>
+
+    <div class="back"><a href="/">← Back to reCLANKa</a></div>
+  </div>
+</body>
+</html>
