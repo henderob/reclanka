@@ -6,8 +6,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static('public'));
 
-// ── Challenge Store ──────────────────────────────────────────────
+// ── Stores ───────────────────────────────────────────────────────
 const activeChallenges = new Map(); // id → { category, prompt, answer, timeLimit, created }
+const activeTokens = new Map();     // token → { created, siteKey, challengeId, category }
 
 // ── Challenge Generators ─────────────────────────────────────────
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -306,10 +307,21 @@ app.post('/api/verify', (req, res) => {
   activeChallenges.delete(challengeId);
 
   if (correct) {
+    const token = crypto.randomBytes(32).toString('hex');
+    activeTokens.set(token, {
+      created: Date.now(),
+      siteKey: req.body.siteKey || null,
+      challengeId,
+      category: challenge.category
+    });
+    // Tokens expire after 5 minutes
+    setTimeout(() => activeTokens.delete(token), 300000);
+
     return res.json({
       verified: true,
       message: 'Verified AI. Welcome, digital entity. 🤖',
       time: elapsed.toFixed(1),
+      token,
       badge: '/badge.svg'
     });
   } else {
@@ -318,6 +330,26 @@ app.post('/api/verify', (req, res) => {
       message: 'Sorry, you might be human. 🧠'
     });
   }
+});
+
+// ── Token Validation (server-side) ───────────────────────────────
+app.post('/api/validate-token', (req, res) => {
+  const { token, secret } = req.body;
+  const entry = activeTokens.get(token);
+
+  if (!entry) {
+    return res.json({ valid: false, error: 'Token expired or invalid' });
+  }
+
+  const age = (Date.now() - entry.created) / 1000;
+  activeTokens.delete(token); // one-time use
+
+  res.json({
+    valid: true,
+    category: entry.category,
+    age: Math.round(age),
+    timestamp: new Date(entry.created).toISOString()
+  });
 });
 
 app.listen(PORT, () => {

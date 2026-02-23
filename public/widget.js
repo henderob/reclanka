@@ -31,11 +31,20 @@
     constructor(el) {
       this.el = el;
       this.api = el.dataset.api || API;
+      this.siteKey = el.dataset.sitekey || null;
       this.challenge = null;
       this.timer = null;
       this.timeLeft = 0;
       this.verified = false;
+      this.token = null;
       this.onVerify = null;
+
+      // Support data-callback attribute
+      const cbName = el.dataset.callback;
+      if (cbName && typeof window[cbName] === 'function') {
+        this.onVerify = window[cbName];
+      }
+
       this.render();
     }
 
@@ -148,13 +157,13 @@
           body: JSON.stringify({ challengeId: this.challenge.id, answer })
         });
         const data = await res.json();
-        this.showResult(data.verified, data.message, data.time);
+        this.showResult(data.verified, data.message, data.time, data.token);
       } catch (e) {
         this.showResult(false, 'Verification failed. Network error. Very human of you.');
       }
     }
 
-    showResult(success, message, time) {
+    showResult(success, message, time, token) {
       const modal = this.overlay.querySelector('.reclanka-modal');
       modal.innerHTML = `
         <button class="reclanka-close">&times;</button>
@@ -170,13 +179,21 @@
 
       if (success) {
         this.verified = true;
-        if (this.onVerify) this.onVerify();
-        setTimeout(() => {
-          this.closeModal();
-          this.render();
-          // Allow re-verification after 3 seconds
-          setTimeout(() => { this.verified = false; this.render(); }, 3000);
-        }, 2000);
+        this.token = token;
+
+        // Inject hidden input for forms
+        const form = this.el.closest('form');
+        if (form) {
+          let hidden = form.querySelector('input[name="reclanka-token"]');
+          if (!hidden) { hidden = document.createElement('input'); hidden.type = 'hidden'; hidden.name = 'reclanka-token'; form.appendChild(hidden); }
+          hidden.value = this.token;
+        }
+
+        if (this.onVerify) this.onVerify(this.token);
+        // Dispatch custom event
+        this.el.dispatchEvent(new CustomEvent('reclanka:verified', { detail: { token: this.token }, bubbles: true }));
+
+        setTimeout(() => { this.closeModal(); this.render(); }, 2000);
       } else {
         const retry = modal.querySelector('.reclanka-submit');
         if (retry) retry.addEventListener('click', () => { this.closeModal(); this.open(); });
@@ -191,6 +208,14 @@
         old.classList.remove('active');
         setTimeout(() => old.remove(), 300);
       }
+    }
+
+    getToken() { return this.token; }
+
+    reset() {
+      this.verified = false;
+      this.token = null;
+      this.render();
     }
 
     escapeHtml(str) {

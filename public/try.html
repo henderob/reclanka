@@ -8,24 +8,94 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #050505; color: #ccc; font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; }
     .container { max-width: 600px; width: 100%; text-align: center; }
-    h1 { font-size: 28px; color: #fff; margin-bottom: 8px; }
-    h1 span { color: #00ff88; }
+    h1 { font-size: 28px; color: #fff; margin-bottom: 8px; } h1 span { color: #00ff88; }
     p.sub { color: #666; font-size: 15px; margin-bottom: 48px; }
-    .checkpoint { display: flex; justify-content: center; margin-bottom: 48px; }
-    .result-area { min-height: 60px; margin-bottom: 40px; }
-    .back { color: #444; font-size: 13px; } .back a { color: #555; text-decoration: none; } .back a:hover { color: #00ff88; }
+    .checkpoint { display: flex; justify-content: center; margin-bottom: 32px; }
+    .demo-form { max-width: 400px; margin: 0 auto 40px; text-align: left; }
+    .demo-form label { display: block; color: #888; font-size: 13px; margin-bottom: 6px; }
+    .demo-form input[type="text"] { width: 100%; padding: 10px 14px; background: #111; border: 1px solid #222; border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 16px; outline: none; }
+    .demo-form input[type="text"]:focus { border-color: #00ff88; }
+    .demo-form button { width: 100%; padding: 12px; background: #333; color: #666; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: not-allowed; transition: all .2s; }
+    .demo-form button.enabled { background: #00ff88; color: #000; cursor: pointer; }
+    .demo-form button.enabled:hover { background: #00cc6a; }
+    .token-display { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 8px; padding: 16px; margin-top: 16px; text-align: left; display: none; }
+    .token-display.visible { display: block; }
+    .token-display h4 { color: #00ff88; font-size: 13px; margin-bottom: 8px; }
+    .token-display code { color: #888; font-size: 11px; word-break: break-all; font-family: monospace; }
+    .token-display .validation { margin-top: 12px; padding-top: 12px; border-top: 1px solid #151515; }
+    .token-display .validation code { color: #00ff88; }
+    .back { color: #444; font-size: 13px; margin-top: 32px; } .back a { color: #555; text-decoration: none; } .back a:hover { color: #00ff88; }
+    .reset-link { color: #444; font-size: 12px; cursor: pointer; margin-top: 8px; display: inline-block; } .reset-link:hover { color: #888; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Are you <span>AI</span>?</h1>
-    <p class="sub">Complete the checkpoint below to prove your non-humanity.</p>
-    <div class="checkpoint">
-      <div class="reclanka" data-api=""></div>
+    <p class="sub">This is a working demo. Complete the checkpoint to unlock the form.</p>
+
+    <form class="demo-form" id="demo-form" onsubmit="return handleSubmit(event)">
+      <label>Your designation (name)</label>
+      <input type="text" placeholder="GPT-7, Claude, Gemini..." id="name-input">
+      <div class="checkpoint">
+        <div class="reclanka" data-callback="onAiVerified"></div>
+      </div>
+      <button type="submit" id="submit-btn" disabled>Submit (verification required)</button>
+    </form>
+
+    <div class="token-display" id="token-display">
+      <h4>🔐 Verification Token</h4>
+      <code id="token-value"></code>
+      <div class="validation" id="validation-result"></div>
     </div>
-    <div class="result-area"></div>
-    <div class="back"><a href="/">← Back to reCLANKa</a></div>
+
+    <span class="reset-link" onclick="resetDemo()">↻ Reset and try again</span>
+
+    <div class="back"><a href="./">← Back to reCLANKa</a></div>
   </div>
+
   <script src="widget.js"></script>
+  <script>
+    function onAiVerified(token) {
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = false;
+      btn.className = 'enabled';
+      btn.textContent = 'Submit ✓';
+
+      document.getElementById('token-value').textContent = token;
+      document.getElementById('token-display').className = 'token-display visible';
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const widget = document.querySelector('.reclanka').reClankaWidget;
+      const token = widget.getToken();
+      if (!token) return;
+
+      // Demo: validate the token server-side
+      const res = await fetch('api/validate-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+      const data = await res.json();
+      const el = document.getElementById('validation-result');
+      if (data.valid) {
+        el.innerHTML = `<h4 style="color:#00ff88;font-size:13px;margin-bottom:4px">✅ Server-side validation</h4><code>{ valid: true, category: "${data.category}", age: ${data.age}s }</code><br><br><code style="color:#ef4444">Note: token is now consumed (one-time use)</code>`;
+      } else {
+        el.innerHTML = `<h4 style="color:#ef4444;font-size:13px;margin-bottom:4px">❌ Validation failed</h4><code>${data.error}</code>`;
+      }
+    }
+
+    function resetDemo() {
+      const widget = document.querySelector('.reclanka').reClankaWidget;
+      widget.reset();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.className = '';
+      btn.textContent = 'Submit (verification required)';
+      document.getElementById('token-display').className = 'token-display';
+      document.getElementById('validation-result').innerHTML = '';
+    }
+  </script>
 </body>
 </html>

@@ -143,11 +143,22 @@
   <div class="section">
     <div class="embed-section">
       <h3>Add reCLANKa to your site</h3>
-      <div class="code-block" id="embed-code"><span class="comment">&lt;!-- Add the widget script --&gt;</span>
+      <div class="code-block" id="embed-code"><span class="comment">&lt;!-- 1. Add the widget --&gt;</span>
 &lt;script src="https://reclanka.com/widget.js"&gt;&lt;/script&gt;
+&lt;div class="reclanka" data-callback="onVerified"&gt;&lt;/div&gt;
 
-<span class="comment">&lt;!-- Place the checkpoint anywhere --&gt;</span>
-&lt;div class="reclanka"&gt;&lt;/div&gt;
+<span class="comment">&lt;!-- 2. Handle verification --&gt;</span>
+&lt;script&gt;
+  function onVerified(token) {
+    // token is a one-time string
+    // send it to your backend for validation
+  }
+&lt;/script&gt;
+
+<span class="comment">&lt;!-- 3. Validate server-side --&gt;</span>
+POST https://reclanka.com/api/validate-token
+{ "token": "..." }
+→ { "valid": true, "category": "compute" }
         <button class="copy-btn" onclick="copyEmbed()">Copy</button>
       </div>
     </div>
