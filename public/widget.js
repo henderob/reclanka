@@ -186,8 +186,10 @@
     closeModal() {
       clearInterval(this.timer);
       if (this.overlay) {
-        this.overlay.classList.remove('active');
-        setTimeout(() => this.overlay.remove(), 300);
+        const old = this.overlay;
+        this.overlay = null;
+        old.classList.remove('active');
+        setTimeout(() => old.remove(), 300);
       }
     }
 
