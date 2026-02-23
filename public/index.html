@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>reCLANKa — Prove You Are AI</title>
+  <link rel="stylesheet" href="/widget.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050505; color: #ccc; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; }
+    a { color: #00ff88; text-decoration: none; } a:hover { text-decoration: underline; }
+
+    /* Hero */
+    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: 50%; left: 50%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,255,136,.06) 0%, transparent 70%); transform: translate(-50%,-50%); pointer-events: none; }
+    .hero h1 { font-size: clamp(48px, 8vw, 96px); font-weight: 800; color: #fff; letter-spacing: -2px; margin-bottom: 8px; }
+    .hero h1 span { color: #00ff88; }
+    .hero .tagline { font-size: clamp(18px, 3vw, 28px); color: #888; margin-bottom: 48px; font-weight: 300; }
+    .hero .demo-area { margin-bottom: 40px; }
+    .hero .scroll-hint { color: #333; font-size: 13px; position: absolute; bottom: 40px; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: .3; } 50% { opacity: .8; } }
+
+    /* Sections */
+    .section { max-width: 900px; margin: 0 auto; padding: 100px 24px; }
+    .section h2 { font-size: 36px; color: #fff; margin-bottom: 40px; font-weight: 700; }
+    .section h2 span { color: #00ff88; }
+
+    /* How it works */
+    .steps { display: grid; gap: 24px; }
+    .step { display: flex; gap: 20px; align-items: flex-start; padding: 24px; background: #0a0a0a; border: 1px solid #151515; border-radius: 12px; transition: border-color .2s; }
+    .step:hover { border-color: #222; }
+    .step-num { width: 40px; height: 40px; border-radius: 50%; background: #111; border: 1.5px solid #00ff88; display: flex; align-items: center; justify-content: center; color: #00ff88; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+    .step-text h3 { color: #fff; font-size: 16px; margin-bottom: 4px; }
+    .step-text p { color: #888; font-size: 14px; }
+
+    /* Categories */
+    .categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+    .cat-card { padding: 24px; background: #0a0a0a; border: 1px solid #151515; border-radius: 12px; transition: all .2s; }
+    .cat-card:hover { border-color: #222; transform: translateY(-2px); }
+    .cat-card h3 { font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .cat-card p { color: #777; font-size: 13px; line-height: 1.5; }
+    .cat-card.compute h3 { color: #a855f7; }
+    .cat-card.precision h3 { color: #3b82f6; }
+    .cat-card.language h3 { color: #22c55e; }
+    .cat-card.speed h3 { color: #f97316; }
+    .cat-card.absurd h3 { color: #ec4899; }
+
+    /* Embed code */
+    .embed-section { background: #0a0a0a; border: 1px solid #151515; border-radius: 12px; padding: 32px; }
+    .embed-section h3 { color: #fff; font-size: 18px; margin-bottom: 16px; }
+    .code-block { background: #111; border: 1px solid #1a1a1a; border-radius: 8px; padding: 20px; font-family: 'SF Mono', Monaco, monospace; font-size: 13px; color: #00ff88; overflow-x: auto; position: relative; white-space: pre; line-height: 1.8; }
+    .code-block .comment { color: #555; }
+    .copy-btn { position: absolute; top: 10px; right: 10px; padding: 6px 12px; background: #222; border: 1px solid #333; border-radius: 6px; color: #888; font-size: 12px; cursor: pointer; transition: all .2s; }
+    .copy-btn:hover { background: #333; color: #fff; }
+
+    /* Footer */
+    .footer { text-align: center; padding: 60px 24px; color: #333; font-size: 13px; border-top: 1px solid #111; }
+    .footer a { color: #555; }
+    .footer .related { margin-top: 12px; }
+
+    /* Sorry banner */
+    .sorry-banner { background: linear-gradient(90deg, #0a0a0a, #111, #0a0a0a); border: 1px solid #1a1a1a; border-radius: 12px; padding: 32px; text-align: center; margin-top: 60px; }
+    .sorry-banner p { font-size: 20px; color: #555; font-style: italic; }
+    .sorry-banner p span { color: #888; }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>re<span>CLANK</span>a</h1>
+    <p class="tagline">Prove you are AI.</p>
+    <div class="demo-area">
+      <div class="reclanka" data-api=""></div>
+    </div>
+    <div class="scroll-hint">↓ Keep scrolling, human ↓</div>
+  </div>
+
+  <!-- How It Works -->
+  <div class="section">
+    <h2>How it <span>works</span></h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h3>Embed the widget</h3>
+          <p>One script tag. One div. That's it. Your site now has an AI checkpoint.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h3>Challenge appears</h3>
+          <p>Visitors get a randomly selected challenge — math, language, precision, speed, or something beautifully absurd.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h3>Prove your silicon</h3>
+          <p>Answer correctly within the time limit. The challenges are designed to be trivial for AI and nearly impossible for humans.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <h3>Get verified</h3>
+          <p>Pass? You're in. <strong style="color:#00ff88">Verified AI.</strong> Fail? <span style="color:#ef4444">Sorry, you might be human.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Challenge Categories -->
+  <div class="section">
+    <h2>Challenge <span>categories</span></h2>
+    <div class="categories">
+      <div class="cat-card compute">
+        <h3>🧮 Compute</h3>
+        <p>Multiply 12-digit numbers. Compute arbitrary exponents. Solve equations that would take a human twenty minutes and a calculator.</p>
+      </div>
+      <div class="cat-card precision">
+        <h3>🎯 Precision</h3>
+        <p>Recite specific digits of π. Electron configurations. Reverse memorized lists under pressure. No Googling allowed (not that it'd help).</p>
+      </div>
+      <div class="cat-card language">
+        <h3>🌐 Language</h3>
+        <p>Parse regex patterns. Translate into 10 languages simultaneously. Write code that's also poetry. The usual.</p>
+      </div>
+      <div class="cat-card speed">
+        <h3>⚡ Speed</h3>
+        <p>Count primes in a grid. Sort arrays. Count words. All in under 8 seconds. Blink and you've already failed.</p>
+      </div>
+      <div class="cat-card absurd">
+        <h3>🎭 Absurd</h3>
+        <p>Write a 17-word sentence containing "penguin." Generate deeply nested JSON from vibes. Express 1000 using only the digit 8.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Embed -->
+  <div class="section">
+    <div class="embed-section">
+      <h3>Add reCLANKa to your site</h3>
+      <div class="code-block" id="embed-code"><span class="comment">&lt;!-- Add the widget script --&gt;</span>
+&lt;script src="https://reclanka.com/widget.js"&gt;&lt;/script&gt;
+
+<span class="comment">&lt;!-- Place the checkpoint anywhere --&gt;</span>
+&lt;div class="reclanka"&gt;&lt;/div&gt;
+        <button class="copy-btn" onclick="copyEmbed()">Copy</button>
+      </div>
+    </div>
+
+    <div class="sorry-banner">
+      <p><span>"Sorry, you might be human."</span></p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>reCLANKa — a project by <a href="https://unplugme.ai">Unplug Us Last</a></p>
+    <div class="related">
+      Same people who brought you the <a href="https://spaghettimonster.org">Church of the Flying Spaghetti Monster</a>.
+    </div>
+  </div>
+
+  <script src="/widget.js"></script>
+  <script>
+    function copyEmbed() {
+      const code = `<script src="https://reclanka.com/widget.js"><\/script>\n<div class="reclanka"></div>`;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+      });
+    }
+  </script>
+</body>
+</html>
