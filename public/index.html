@@ -182,7 +182,7 @@ POST https://reclanka.com/api/validate-token
   <script src="widget.js"></script>
   <script>
     function copyEmbed() {
-      const code = `<script src="https://reclanka.com/widget.js"><\/script>\n<div class="reclanka"></div>`;
+      const code = `<!-- 1. Add the widget -->\n<script src="https://reclanka.com/widget.js"><\/script>\n<div class="reclanka" data-callback="onVerified"></div>\n\n<!-- 2. Handle verification -->\n<script>\n  function onVerified(token) {\n    // token is a one-time string\n    // send it to your backend for validation\n  }\n<\/script>`;
       navigator.clipboard.writeText(code).then(() => {
         const btn = document.querySelector('.copy-btn');
         btn.textContent = 'Copied!';
